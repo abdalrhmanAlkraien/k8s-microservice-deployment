@@ -31,17 +31,11 @@ spec:
             requests:
               cpu: "250m"
               memory: "512Mi"
-          env:
-            - name: MYSQL_DATABASE
-              value: report-service
-            - name: MYSQL_USER
-              value: adminUser 
-            - name: MYSQL_PASSWORD
-              value: AdminPassword
-            - name: MYSQL_ROOT_PASSWORD
-              value: AdminPassword
-            - name: MYSQL_EXTRA_FLAGS
-              value: "--lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp"
+          envFrom:
+            - configMapRef:
+                name: document-db-map
+            - secretRef:
+                name:  document-db-secret
           ports:
             - containerPort: 3306
               name: expose-port

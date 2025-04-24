@@ -24,41 +24,49 @@ spec:
         owner: abdalrhman
         env: dev
     spec:
-      restartPolicy: Always
+      # restartPolicy: Always
       containers:
-      - image:  abdalrhmanalkraien/document-service:1.0.6
+      - image:  abdalrhmanalkraien/document-service:1.0.10
         imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
         name:  document-service
         resources:
           limits: 
             cpu: "500m"
-            memory: "512Mi"
+            memory: "1024Mi"
           requests:
-            cpu: "20m"
-            memory: "55M"
-        env: 
-          - name:  SPRING_DATASOURCE_URL
-            value: jdbc:mysql://db-service-app.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character
-          - name: _JAVA_OPTIONS
-            value: -Xmx2048m -Xms256m
-        # livenessProbe:
-        #   httpGet:
-        #     path: /_status/healthz
-        #     port: 5000
-        #   initialDelaySeconds: 90
-        #   timeoutSeconds: 10
-        # readinessProbe:
-        #   httpGet:
-        #     path: /_status/healthz
-        #     port: 5000
-        #   initialDelaySeconds: 30
-        #   timeoutSeconds: 10      
+            cpu: "250m"
+            memory: "512Mi"
+        envFrom:
+          - configMapRef:
+              name: document-app-map
+          - secretRef:
+              name: document-app-secret
+        env:
+          - name: JAVA_TOOL_OPTIONS
+            value: "-Xms256m -Xmx1024m"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/actuator/health/liveness
+            port: 8090
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /api/v1/actuator/health/readiness
+            port: 8090
+          initialDelaySeconds: 100
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 10      
         ports:
         - containerPort:  8090
           name:  expose-port
-      #   volumeMounts:
-      #   - mountPath: /data
-      #     name: data
-      # volumes:
-      #   - name: data
-      #     emptyDir: {}
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+        - name: data
+          emptyDir: {}
