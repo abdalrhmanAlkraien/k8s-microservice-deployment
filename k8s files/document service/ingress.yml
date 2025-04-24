@@ -12,10 +12,10 @@ metadata:
   
 spec:
   rules:
-    - host:  myapp.192.168.49.2.nip.io
+    - host: abed.local
       http: 
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
