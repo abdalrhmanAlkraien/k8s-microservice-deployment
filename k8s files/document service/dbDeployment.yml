@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: document-db
+  namespace: micro-app
+  labels:
+    owner: abdalrhman
+    env: prod
+    app: document-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: document-db-pod
+  template:
+    metadata:
+      labels:
+        owner: abdalrhman
+        env: prod
+        app: document-db-pod
+    spec: 
+      restartPolicy: Always 
+      containers:
+        - image: mysql:8.0.20
+          name: document-db-service
+          imagePullPolicy: IfNotPresent
+          resources:  
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+          env:
+            - name: MYSQL_DATABASE
+              value: report-service
+            - name: MYSQL_USER
+              value: adminUser 
+            - name: MYSQL_PASSWORD
+              value: AdminPassword
+            - name: MYSQL_ROOT_PASSWORD
+              value: AdminPassword
+            - name: MYSQL_EXTRA_FLAGS
+              value: "--lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp"
+          ports:
+            - containerPort: 3306
+              name: expose-port
+          volumeMounts:
+            - name:  mysql-storage
+              mountPath:  /var/lib/mysql/
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: document-pvc-app
+          
+
+
+
+          
+
+

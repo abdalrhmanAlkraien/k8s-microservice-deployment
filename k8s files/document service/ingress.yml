@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name:  document-service-ingress
+  labels:
+    app: document-service-ingress
+    owner: abdalrhman
+    env: dev
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+  namespace: micro-app
+  
+spec:
+  rules:
+    - host:  myapp.192.168.49.2.nip.io
+      http: 
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: document-service-app
+                port:
+                  number: 8085

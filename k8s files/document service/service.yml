@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name:  document-service-app
+  namespace: micro-app
+spec:
+  selector:
+    app:  document-pod
+  type:  ClusterIP
+  ports:
+  - name:  external-port
+    port:  8085
+    targetPort:  8090
