@@ -1,34 +1,36 @@
+# {{- $podName := include "document-service-chart.podName" . }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  document-app
-  namespace: micro-app
+  name:  {{ .Values.document-app.deployment.labels.name }}
+  namespace: {{ .Values.document-app.namespace }}
   labels:
-    app:  document-app
-    env: dev
-    owner: abdalrhmanAlkraien
+    app: {{-include "document-app.labels.app" . -}}
+    owner: {{-include "document-app.labels.owner" . -}}
+    env: {{-include "document-app.labels.env" . -}}
 spec:
-  replicas: 2
+  replicas: {{ .Values.document-app.deployment.replicas }}
   selector:
     matchLabels:
-      app:  document-pod 
+      app:  {{ $podName }}
   strategy:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-    type: RollingUpdate
+    type: {{ .Values.document-app.deployment.strategy.type }}
   template:
     metadata:
       labels:
-        app:  document-pod
-        owner: abdalrhman
-        env: dev
+        app: {{ $podName }}
+        owner: {{ .Values.document-app.labels.owner }}
+        env: {{ .Values.document-app.labels.env }}
     spec:
       # restartPolicy: Always
       containers:
-      - image:  abdalrhmanalkraien/document-service:1.0.10
-        imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
-        name:  document-service
+      - image:  {{ include "document-app.deployment.image.fullname" . | quote }}
+        imagePullPolicy: {{ .Values.document-app.deployment.image.imagePullPolicy }} # could be Always, IfNotPresent, and Never
+        name: {{ .Values.document-app.deployment.image.container-name }}
         resources:
           limits: 
             cpu: "500m"
@@ -41,13 +43,10 @@ spec:
               name: document-app-map
           - secretRef:
               name: document-app-secret
-        env:
-          - name: JAVA_TOOL_OPTIONS
-            value: "-Xms256m -Xmx1024m"
         livenessProbe:
           httpGet:
             path: /api/v1/actuator/health/liveness
-            port: 8090
+            port: {{ .Values.document-app.deployment.expose-port }}
           initialDelaySeconds: 120
           periodSeconds: 10
           failureThreshold: 3
@@ -56,13 +55,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/v1/actuator/health/readiness
-            port: 8090
+            port: {{ .Values.document-app.deployment.expose-port }}
           initialDelaySeconds: 100
           periodSeconds: 10
           failureThreshold: 3
           timeoutSeconds: 10      
         ports:
-        - containerPort:  8090
+        - containerPort:  {{ .Values.document-app.deployment.expose-port }}
           name:  expose-port
         volumeMounts:
         - mountPath: /data

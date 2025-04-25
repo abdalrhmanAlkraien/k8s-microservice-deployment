@@ -1,0 +1,40 @@
+# Deployment
+
+document-app:
+  namespace: micro-app
+  labels:
+    owner: abdalrhman
+    env: dev
+    app: document-service
+    pod-name: document-pod
+  deployment:
+    labels:
+      name: document-app
+    replicas: 2
+    image:
+      repository: abdalrhmanalkraien
+      image-name: document-service
+      image-version: 1.0.10
+      imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
+      container-name: document-service
+    expose-port: 8090
+    strategy:
+      type: RollingUpdate
+
+  env:
+    configMapRef: document-app-map
+    secretRef: document-app-secret
+
+  #Service
+  service:
+    labels:
+      name: document-service-app
+    port:
+      listener-port: 8090
+      expose-port: 8085
+
+#ingress
+
+#Configkey 
+
+#Secret key

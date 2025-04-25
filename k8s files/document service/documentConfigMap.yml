@@ -10,4 +10,5 @@ metadata:
 data:
   data.url: jdbc:mysql://db-service-app.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character
   _JAVA_OPTIONS: -Xmx2048m -Xms256m
+  JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1024m"
   profile.active: dev
