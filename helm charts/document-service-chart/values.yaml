@@ -1,5 +1,8 @@
 # Deployment
 
+# define the app name
+name: document-service-app
+
 document-app:
   namespace: micro-app
   labels:
@@ -36,5 +39,21 @@ document-app:
 #ingress
 
 #Configkey 
+  configMap:
+    data:
+      data.url: "jdbc:mysql://db-service-app.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character"
+      _JAVA_OPTIONS: "-Xmx2048m -Xms256m"
+      JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1024m"
+      profile.active: dev
 
 #Secret key
+  secret: 
+    data:
+      data.username: adminUser
+      data.password: AdminPassword
+
+# pv voulme
+  pv:
+    storage: 5Gi
+    path: "/mnt/data/db"
+    accessMode: ReadWriteOnce

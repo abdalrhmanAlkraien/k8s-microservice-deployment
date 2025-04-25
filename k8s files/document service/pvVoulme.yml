@@ -1,19 +1,17 @@
 apiVersion: v1
 kind: PersistentVolume
-metadata: 
-  name: db-document-service
-  namespace: micro-app
+metadata:
+  name:  {{ include "document-service.app.name" .}}
+  namespace: {{ index .Values "document-app" "namespace" }}
   labels:
-    app: db-document-service
-    owner: abdalrhman
-    env: dev
+    {{ include "document-app.labels" . | nindent 4 }}
 spec: 
   capacity: 
-    storage: 5Gi
+    storage: {{ index .Values "document-app" "pv" "storage"}}
   accessModes: 
-    - ReadWriteOnce 
+    - {{ index .Values "document-app" "pv" "accessMode"}} 
   persistentVolumeReclaimPolicy: Retain # keep the data safe after delete the pvc
   storageClassName: ""
   hostPath:
-    path: "/mnt/data/db"
+    path: {{ index .Values "document-app" "pv" "path"}}
   

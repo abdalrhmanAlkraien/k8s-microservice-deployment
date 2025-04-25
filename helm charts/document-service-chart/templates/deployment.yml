@@ -1,16 +1,14 @@
-# {{- $podName := include "document-service-chart.podName" . }}
+{{- $podName := include "document-app.podName" . }}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  {{ .Values.document-app.deployment.labels.name }}
-  namespace: {{ .Values.document-app.namespace }}
+  name:  {{ include "document-service.app.name" .}}
+  namespace: {{ index .Values "document-app" "namespace" }}
   labels:
-    app: {{-include "document-app.labels.app" . -}}
-    owner: {{-include "document-app.labels.owner" . -}}
-    env: {{-include "document-app.labels.env" . -}}
+    {{ include "document-app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.document-app.deployment.replicas }}
+  replicas: {{ index .Values "document-app" "deployment" "replicas" }}
   selector:
     matchLabels:
       app:  {{ $podName }}
@@ -18,19 +16,19 @@ spec:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-    type: {{ .Values.document-app.deployment.strategy.type }}
+    type: {{ index .Values "document-app" "deployment" "strategy" "type" }}
   template:
     metadata:
       labels:
         app: {{ $podName }}
-        owner: {{ .Values.document-app.labels.owner }}
-        env: {{ .Values.document-app.labels.env }}
+        owner: {{ index .Values "document-app" "labels" "owner" }}
+        env: {{ index .Values "document-app" "labels" "env" }}
     spec:
       # restartPolicy: Always
       containers:
       - image:  {{ include "document-app.deployment.image.fullname" . | quote }}
-        imagePullPolicy: {{ .Values.document-app.deployment.image.imagePullPolicy }} # could be Always, IfNotPresent, and Never
-        name: {{ .Values.document-app.deployment.image.container-name }}
+        imagePullPolicy: {{ index .Values "document-app" "deployment" "image" "imagePullPolicy" }} # could be Always, IfNotPresent, and Never
+        name: {{ index .Values "document-app" "deployment" "image" "container-name" }}
         resources:
           limits: 
             cpu: "500m"
@@ -46,7 +44,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/v1/actuator/health/liveness
-            port: {{ .Values.document-app.deployment.expose-port }}
+            port: {{ index .Values "document-app" "deployment" "expose-port" }}
           initialDelaySeconds: 120
           periodSeconds: 10
           failureThreshold: 3
@@ -55,13 +53,13 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/v1/actuator/health/readiness
-            port: {{ .Values.document-app.deployment.expose-port }}
+            port: {{ index .Values "document-app" "deployment" "expose-port" }}
           initialDelaySeconds: 100
           periodSeconds: 10
           failureThreshold: 3
           timeoutSeconds: 10      
         ports:
-        - containerPort:  {{ .Values.document-app.deployment.expose-port }}
+        - containerPort:  {{ index .Values "document-app" "deployment" "expose-port" }}
           name:  expose-port
         volumeMounts:
         - mountPath: /data

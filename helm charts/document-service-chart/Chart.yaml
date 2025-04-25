@@ -4,7 +4,8 @@ description: the helm chart for document service.
 type: application
 
 # This is the chart version. 
-version: 0.1.0
+version: "0.1.0"
 
 # This is the app version, that will install from docker hub or any other image registery.
 appVersion: "1.16.0"
+icon: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"

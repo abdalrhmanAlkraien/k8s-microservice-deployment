@@ -1,0 +1,17 @@
+{{- $podName := include "document-app.podName" . }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "document-service.app.name" . }}
+  namespace: {{ index .Values "document-app" "namespace" }}
+  labels:
+    {{- include "document-app.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: {{ $podName }}
+  type: ClusterIP
+  ports:
+    - name: external-port
+      port: {{ index .Values "document-app" "service" "port" "expose-port" }}
+      targetPort: {{ index .Values "document-app" "service" "port" "listener-port" }}
