@@ -1,6 +1,10 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
 apiVersion: v2
-name: nexus-chart
-description: A Helm chart for Kubernetes
+name: nexus
+description: A Helm chart for nexus and deploy it by K8s
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -12,13 +16,9 @@ description: A Helm chart for Kubernetes
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+# This is the chart version. 
+version: "0.1.0"
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
-# It is recommended to use it with quotes.
+# This is the app version, that will install from docker hub or any other image registery.
 appVersion: "1.16.0"
+icon: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"

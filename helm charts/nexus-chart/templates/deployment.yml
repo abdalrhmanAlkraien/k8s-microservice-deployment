@@ -1,0 +1,58 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
+{{ $appName := include "app.name" .}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ $appName }}
+  namespace: {{ index .Values.namespace }}
+  labels:
+    {{ include "common.labels" . | nindent 4 }}
+spec:
+    replicas: {{ .Values.nexus.deployment.replicas }}
+    selector:
+        matchLabels:
+            app: {{ $appName }}
+    strategy:
+        rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+        type: {{ index .Values.nexus.deployment.strategy.type }}
+    template:
+        metadata:
+        labels:
+            {{ include "common.labels" . | nindent 8 }}
+        annotations:
+            checksum/config: {{ include (print $.Template.BasePath "/configMap.yml") . | sha256sum }}
+            checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
+        spec:
+            restartPolicy: Always
+            containers:
+                - image: {{ include "nexus.deployment.image.fullname" . | quote }}
+                  imagePullPolicy: {{ .Values.nexus.deployment.image.imagePullPolicy }}
+                  name: {{ index .Values.nexus.deployment.image "container-name" }}
+                  resources:
+                    limits: 
+                        cpu: "500m"
+                        memory: "1024Mi"
+                    requests:
+                        cpu: "250m"
+                        memory: "512Mi"
+
+                  envFrom:
+                    - configMapRef:
+                            name: {{ include "app.name" .}}
+                    - secretRef:
+                        name: {{ include "app.name" .}} 
+                  ports:
+                    - containerPort: {{ index .Values "nexus" "deployment" "expose-port" }}
+                      name: expose-port
+                  volumeMounts: 
+                    - name:  {{ .Values.nexus.deployment.volume.name }}
+                      mount-path: {{ .Values.nexus.deployment.volume.mountPath }}
+            volumes: 
+                - name: {{ .Values.nexus.deployment.volume.name }}
+                  persistentVolumeClaim:
+                    claimName: {{ $appName }}

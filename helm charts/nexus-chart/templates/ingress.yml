@@ -1,0 +1,24 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
+# {{ $appName := include "app.name" . }}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name:  {{ $appName }}
+  namespace: {{ index .Values.namespace }}
+  labels:
+    {{ include "common.labels" . | nindent 4 }}
+spec:
+  rules:
+    - host: nexus.local
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: 
+              name: {{ $appName }}
+              port:
+                number: {{ index .Values.nexus.ingress.port.number }}

@@ -2,16 +2,17 @@
 # Year: 2025
 # Version: 1.0
 
+{{ $appName := include "app.name" . }}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name:  {{ include "app.name" .}}
+  name:  {{ $appName }}
   namespace: {{ index .Values.namespace }}
   labels:
     {{ include "common.labels" . | nindent 4 }}
   # annotations:
   #   nginx.ingress.kubernetes.io/rewrite-target: /
-  namespace: micro-app
   
 spec:
   rules:
@@ -22,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "app.name" .}}
+                name: {{ $appName }}
                 port:
                   number: {{ index .Values "document-app" "deployment" "expose-port" }}

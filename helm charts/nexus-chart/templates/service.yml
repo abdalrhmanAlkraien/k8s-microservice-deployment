@@ -1,0 +1,20 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
+# {{ $appName :=  include "app.name" .}}
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ $appName }}
+  namespace: {{ index .Values.namespace }}
+  labels:
+    {{ include "common.labels" . | nindent 4 }}
+spec:
+  selector:
+    app:  {{ $appName }}
+  type:  NodePort
+  ports:
+  - name:  internal-access-port
+    port:  {{ index .Values.nexus.service.port "expose-port"}}
+    targetPort:  {{ index .Values.nexus.service.port "listener-port"}}
