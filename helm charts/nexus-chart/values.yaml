@@ -10,13 +10,13 @@ common:
   labels:
     owner: abdalrhman
     env: dev
-    app: document-db
+    app: nexus
 
 nexus:
 
   # Deployment section
   deployment:
-    replicas: 2
+    replicas: 1
     image:
       repository: sonatype
       image-name: nexus3
@@ -52,10 +52,10 @@ nexus:
   # pv
   pv:
     storage: 5Gi
-    accessMode: readWriteOnce
+    accessMode: ReadWriteOnce
+    path: "/mnt/data"
 
   #pvc
-
   pvc:
     app: x
   

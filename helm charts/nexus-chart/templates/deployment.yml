@@ -22,8 +22,8 @@ spec:
     type: {{ index .Values.nexus.deployment.strategy.type }}
   template:
     metadata:
-    labels:
-      {{ include "common.labels" . | nindent 8 }}
+      labels:
+        {{ include "common.labels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configMap.yml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
@@ -43,33 +43,33 @@ spec:
         livenessProbe:
           httpGet:
             path: /service/rest/v1/status
-            port: {{ index .Values "nexus" "deployment" "expose-port" }}
-            initialDelaySeconds: 120
-            periodSeconds: 10
-            failureThreshold: 3
-            timeoutSeconds: 10
+            port: {{ index .Values.nexus.deployment "expose-port" }}
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 10
 
         readinessProbe:
           httpGet:
             path: /service/rest/v1/status
             port: {{ index .Values "nexus" "deployment" "expose-port" }}
-            initialDelaySeconds: 90
-            periodSeconds: 10
-            failureThreshold: 3
-            timeoutSeconds: 10
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 10
                       
         envFrom:
-        - configMapRef:
-          name: {{ $appName }}
-        - secretRef:
-          name: {{ $appName }}
+          - configMapRef:
+              name: {{ $appName }}
+          - secretRef:
+              name: {{ $appName }}
         ports:
         - containerPort: {{ index .Values "nexus" "deployment" "expose-port" }}
           name: expose-port
         volumeMounts: 
           - name:  {{ $appName }}
-            mount-path: {{ .Values.nexus.deployment.volume.mountPath }}
+            mountPath: {{ .Values.nexus.deployment.volume.mountPath }}
       volumes: 
-      - name: {{ $appName }}
-        persistentVolumeClaim:
-          claimName: {{ $appName }}
+        - name: {{ $appName }}
+          persistentVolumeClaim:
+            claimName: {{ $appName }}

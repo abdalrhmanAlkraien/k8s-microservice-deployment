@@ -13,3 +13,9 @@ metadata:
 spec:
   capacity:
     storage: {{ .Values.nexus.pv.storage }}
+  accessModes:
+    - {{ index .Values "nexus" "pv" "accessMode"}}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  hostPath:
+    path: {{ index .Values "nexus" "pv" "path"}}

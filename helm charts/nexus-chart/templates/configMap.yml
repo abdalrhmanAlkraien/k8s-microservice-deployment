@@ -10,5 +10,5 @@ metadata:
   labels:
     {{ include "common.labels" . | nindent 4 }}
 data:
-  NEXUS_SECURITY_RANDOMPASSWORD: {{ .Values.nexus.configMap.NEXUS_SECURITY_RANDOMPASSWORD }}
+  NEXUS_SECURITY_RANDOMPASSWORD: {{ .Values.nexus.configMap.NEXUS_SECURITY_RANDOMPASSWORD | quote }}
   
