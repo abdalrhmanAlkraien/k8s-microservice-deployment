@@ -1,15 +1,21 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
 # define the app name
 name: document-db
+namespace: micro-app
 
-# Deployment
-document-db:
-  namespace: micro-app
-  restartPolicy: "Always"
+#Common
+common:
   labels:
     owner: abdalrhman
     env: dev
     app: document-db
-    pod-name: document-db-pod
+
+# Deployment
+document-db:
+  restartPolicy: "Always"
   deployment:
     replicas: 1
     expose-port: 3306

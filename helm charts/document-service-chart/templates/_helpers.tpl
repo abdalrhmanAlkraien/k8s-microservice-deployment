@@ -21,15 +21,15 @@
     {{- printf "%s-%s and the app version is %s"  $chartName $chartVersion $appVersion | trimSuffix "-" }}
 {{- end}}
 
-{{- define "document-service.chart.name" -}}
+{{- define "getChartName" -}}
     {{- default .Chart.Name .Values.name | trunc 63 | trimSuffix "-"}}
 {{end}}
 
-{{- define "document-service.app.name" -}}
+{{- define "app.name" -}}
     {{- if .Values.name}}
         {{- .Values.name | trunc 63 | trimSuffix "-" }}
     {{- else}}
-        {{printf "%s-%s" .Release.Name (include "document-service.chart.name" .) | trunc 63 | trimSuffix "-"}}
+        {{printf "%s-%s" .Release.Name (include "getChartName" .) | trunc 63 | trimSuffix "-"}}
     {{- end }}
 {{end}}
 
@@ -74,24 +74,24 @@
         3- app
 */}}
 
-{{- define "document-app.labels.owner" -}}
-    {{- default "abdalrhman" (index .Values "document-app" "labels" "owner") }}
+{{- define "common.labels.owner" -}}
+    {{- default "abdalrhman" (index .Values.common.labels.owner) }}
 {{- end }}
 
-{{- define "document-app.labels.env" -}}
-    {{- default "dev" (index .Values "document-app" "labels" "env") }}
+{{- define "common.labels.env" -}}
+    {{- default "dev" (index .Values.common.labels.env) }}
 {{- end }}
 
-{{- define "document-app.labels.app" -}}
-    {{- default "document-app" (index .Values "document-app" "labels" "app") }}
+{{- define "common.labels.app" -}}
+    {{- default "document-db" (index .Values.common.labels.app) }}
 {{- end }}
 
-{{- define "document-app.labels" -}}
-app.kubernetes.io/name: {{ include "document-service.chart.name" . }}
+{{- define "common.labels" -}}
+app.kubernetes.io/name: {{ include "getChartName" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-owner: {{ include "document-app.labels.owner" . }}
-evn: {{ include "document-app.labels.env" . }}
-app: {{include "document-app.labels.app" .}}
+owner: {{ include "common.labels.owner" . }}
+evn: {{ include "common.labels.env" . }}
+app: {{include "common.labels.app" .}}
 {{end}}

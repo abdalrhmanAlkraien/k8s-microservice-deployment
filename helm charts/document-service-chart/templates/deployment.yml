@@ -5,15 +5,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  {{ include "document-service.app.name" .}}
-  namespace: {{ index .Values "document-app" "namespace" }}
+  name:  {{ include "app.name" .}}
+  namespace: {{ index .Values.namespace }}
   labels:
-    {{ include "document-app.labels" . | nindent 4 }}
+    {{ include "common.labels" . | nindent 4 }}
 spec:
   replicas: {{ index .Values "document-app" "deployment" "replicas" }}
   selector:
     matchLabels:
-      app: {{ include "document-service.app.name" .}}
+      app: {{ include "app.name" .}}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        {{ include "document-app.labels" . | nindent 8 }}
+        {{ include "common.labels" . | nindent 8 }}
     spec:
       # restartPolicy: Always
       containers:
@@ -38,9 +38,9 @@ spec:
             memory: "512Mi"
         envFrom:
           - configMapRef:
-              name: {{ include "document-service.app.name" .}}
+              name: {{ include "app.name" .}}
           - secretRef:
-              name: {{ include "document-service.app.name" .}}
+              name: {{ include "app.name" .}}
         livenessProbe:
           httpGet:
             path: /api/v1/actuator/health/liveness

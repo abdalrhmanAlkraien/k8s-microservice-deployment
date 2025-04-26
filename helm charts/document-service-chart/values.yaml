@@ -4,17 +4,17 @@
 
 # define the app name
 name: document-service-app
+namespace: micro-app
 
-# Deployment
-document-app:
-  namespace: micro-app
+common:
   labels:
     owner: abdalrhman
     env: dev
-    app: document-service
+    app: document-service-app
+
+# Deployment
+document-app:
   deployment:
-    labels:
-      name: document-app
     replicas: 2
     image:
       repository: abdalrhmanalkraien

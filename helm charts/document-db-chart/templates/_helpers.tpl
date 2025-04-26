@@ -21,15 +21,15 @@
     {{- printf "%s-%s and the app version is %s"  $chartName $chartVersion $appVersion | trimSuffix "-" }}
 {{- end}}
 
-{{- define "document-db.chart.name" -}}
+{{- define "getChartName" -}}
     {{- default .Chart.Name .Values.name | trunc 63 | trimSuffix "-"}}
 {{end}}
 
-{{- define "document-db.app.name" -}}
+{{- define "app.name" -}}
     {{- if .Values.name}}
         {{- .Values.name | trunc 63 | trimSuffix "-" }}
     {{- else}}
-        {{printf "%s-%s" .Release.Name (include "document-service.chart.name" .) | trunc 63 | trimSuffix "-"}}
+        {{printf "%s-%s" .Release.Name (include "getChartName" .) | trunc 63 | trimSuffix "-"}}
     {{- end }}
 {{end}}
 
@@ -73,20 +73,21 @@
         3- app
 */}}
 
+
 {{- define "common.labels.owner" -}}
-    {{- default "abdalrhman" (index .Values "document-db" "labels" "owner") }}
+    {{- default "abdalrhman" (index .Values.common.labels.owner) }}
 {{- end }}
 
 {{- define "common.labels.env" -}}
-    {{- default "dev" (index .Values "document-db" "labels" "env") }}
+    {{- default "dev" (index .Values.common.labels.env) }}
 {{- end }}
 
 {{- define "common.labels.app" -}}
-    {{- default "document-db" (index .Values "document-db" "labels" "app") }}
+    {{{{- default "document-db" (index .Values.common.labels.app) }}}}
 {{- end }}
 
 {{- define "common.labels" -}}
-app.kubernetes.io/name: {{ include "document-db.chart.name" . }}
+app.kubernetes.io/name: {{ include "getChartName" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}

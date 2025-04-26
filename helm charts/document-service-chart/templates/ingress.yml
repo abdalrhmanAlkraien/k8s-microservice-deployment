@@ -5,10 +5,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name:  {{ include "document-service.app.name" .}}
-  namespace: {{ index .Values "document-app" "namespace" }}
+  name:  {{ include "app.name" .}}
+  namespace: {{ index .Values.namespace }}
   labels:
-    {{ include "document-app.labels" . | nindent 4 }}
+    {{ include "common.labels" . | nindent 4 }}
   # annotations:
   #   nginx.ingress.kubernetes.io/rewrite-target: /
   namespace: micro-app
@@ -22,6 +22,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "document-service.app.name" .}}
+                name: {{ include "app.name" .}}
                 port:
                   number: {{ index .Values "document-app" "deployment" "expose-port" }}

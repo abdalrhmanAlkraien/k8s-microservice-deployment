@@ -5,15 +5,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "document-db.app.name" . }}
-  namespace: {{ index .Values "document-db" "namespace" }}
+  name:  {{ include "app.name" .}}
+  namespace: {{ index .Values.namespace }}
   labels:
     {{ include "common.labels" . | nindent 4 }}
 spec:
   replicas: {{ index .Values "document-db" "deployment" "replicas" }}
   selector:
     matchLabels:
-      app: {{ include "document-db.app.name" .}}
+      app: {{ include "app.name" .}}
   template:
     metadata:
       labels:
@@ -33,9 +33,9 @@ spec:
               memory: "512Mi"
           envFrom:
             - configMapRef:
-                name: {{ include "document-db.app.name" .}}
+                name: {{ include "app.name" .}}
             - secretRef:
-                name:  {{ include "document-db.app.name" .}}
+                name:  {{ include "app.name" .}}
           ports:
             - containerPort: {{ index .Values "document-db" "deployment" "expose-port" }}
               name: expose-port
@@ -45,7 +45,7 @@ spec:
       volumes:
         - name: {{ index .Values "document-db" "deployment" "volume" "name" }}
           persistentVolumeClaim:
-            claimName: {{ include "document-db.app.name" . }}
+            claimName: {{ include "app.name" .}}
           
 
 
