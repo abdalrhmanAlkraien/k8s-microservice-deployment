@@ -1,3 +1,7 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
 apiVersion: v1
 kind: Pod
 metadata:

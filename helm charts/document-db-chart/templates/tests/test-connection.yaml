@@ -1,9 +1,14 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "document-db-chart.fullname" . }}-test-connection"
+  name: {{ include "document-db.app.name" .}}
   labels:
-    {{- include "document-db-chart.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
+
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +16,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "document-db-chart.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "document-db.app.name" . }}:{{ index .Values "document-db" "deployment" "expose-port" }}']
   restartPolicy: Never

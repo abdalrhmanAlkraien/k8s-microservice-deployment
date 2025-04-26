@@ -1,0 +1,21 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "document-db.app.name" .}}
+  namespace: {{ index .Values "document-db" "namespace" }}
+  labels:
+    {{ include "common.labels" . | nindent 4 }}
+spec: 
+  capacity: 
+    storage: {{ index .Values "document-db" "pv" "storage"}}
+  accessModes: 
+    - {{ index .Values "document-db" "pv" "accessMode"}} 
+  persistentVolumeReclaimPolicy: Retain # keep the data safe after delete the pvc
+  storageClassName: ""
+  hostPath:
+    path: {{ index .Values "document-db" "pv" "path"}}
+  

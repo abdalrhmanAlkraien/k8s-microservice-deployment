@@ -1,0 +1,55 @@
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "document-db.app.name" . }}
+  namespace: {{ index .Values "document-db" "namespace" }}
+  labels:
+    {{ include "common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ index .Values "document-db" "deployment" "replicas" }}
+  selector:
+    matchLabels:
+      app: {{ include "document-db.app.name" .}}
+  template:
+    metadata:
+      labels:
+        {{ include "common.labels" . | nindent 8 }}
+    spec: 
+      restartPolicy: {{ index .Values "document-db" "deployment" "restartPolicy" }} 
+      containers:
+        - image: {{ include "document-db.deployment.image.fullname" . | quote }}
+          name: {{ index .Values "document-db" "deployment" "image" "container-name" }}
+          imagePullPolicy: {{ index .Values "document-db" "deployment" "image" "imagePullPolicy" }}
+          resources:  
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+          envFrom:
+            - configMapRef:
+                name: {{ include "document-db.app.name" .}}
+            - secretRef:
+                name:  {{ include "document-db.app.name" .}}
+          ports:
+            - containerPort: {{ index .Values "document-db" "deployment" "expose-port" }}
+              name: expose-port
+          volumeMounts:
+            - name:  {{ index .Values "document-db" "deployment" "volume" "name" }}
+              mountPath:  {{ index .Values "document-db" "deployment" "volume" "mountPath" }}
+      volumes:
+        - name: {{ index .Values "document-db" "deployment" "volume" "name" }}
+          persistentVolumeClaim:
+            claimName: {{ include "document-db.app.name" . }}
+          
+
+
+
+          
+
+

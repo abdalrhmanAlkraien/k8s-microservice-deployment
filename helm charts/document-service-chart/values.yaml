@@ -1,15 +1,17 @@
-# Deployment
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
 
 # define the app name
 name: document-service-app
 
+# Deployment
 document-app:
   namespace: micro-app
   labels:
     owner: abdalrhman
     env: dev
     app: document-service
-    pod-name: document-pod
   deployment:
     labels:
       name: document-app
@@ -41,7 +43,7 @@ document-app:
 #Configkey 
   configMap:
     data:
-      data.url: "jdbc:mysql://db-service-app.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character"
+      data.url: "jdbc:mysql://document-db.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character"
       _JAVA_OPTIONS: "-Xmx2048m -Xms256m"
       JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1024m"
       profile.active: dev
@@ -52,8 +54,3 @@ document-app:
       data.username: adminUser
       data.password: AdminPassword
 
-# pv voulme
-  pv:
-    storage: 5Gi
-    path: "/mnt/data/db"
-    accessMode: ReadWriteOnce

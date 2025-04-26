@@ -1,6 +1,9 @@
 {{/*
         Defined methods using helm template to create common usage.
-    */}}
+        Author: Abdalrhman Alkrain
+        Year: 2025
+        Version: 1.0
+*/}}
 
 {{/*
         logs the chart details.

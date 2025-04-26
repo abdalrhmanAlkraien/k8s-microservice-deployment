@@ -1,4 +1,6 @@
-{{- $podName := include "document-app.podName" . }}
+# Author: Abdalrhman Alkrain
+# Year: 2025
+# Version: 1.0
 
 apiVersion: apps/v1
 kind: Deployment
@@ -11,7 +13,7 @@ spec:
   replicas: {{ index .Values "document-app" "deployment" "replicas" }}
   selector:
     matchLabels:
-      app:  {{ $podName }}
+      app: {{ include "document-service.app.name" .}}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -20,9 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ $podName }}
-        owner: {{ index .Values "document-app" "labels" "owner" }}
-        env: {{ index .Values "document-app" "labels" "env" }}
+        {{ include "document-app.labels" . | nindent 8 }}
     spec:
       # restartPolicy: Always
       containers:
@@ -38,9 +38,9 @@ spec:
             memory: "512Mi"
         envFrom:
           - configMapRef:
-              name: document-app-map
+              name: {{ include "document-service.app.name" .}}
           - secretRef:
-              name: document-app-secret
+              name: {{ include "document-service.app.name" .}}
         livenessProbe:
           httpGet:
             path: /api/v1/actuator/health/liveness
