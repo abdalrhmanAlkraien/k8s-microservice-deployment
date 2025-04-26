@@ -2,10 +2,12 @@
 # Year: 2025
 # Version: 1.0
 
+{{ $appName := include "app.name" . }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  {{ include "app.name" .}}
+  name:  {{ $appName }}
   namespace: {{ index .Values.namespace }}
   labels:
     {{ include "common.labels" . | nindent 4 }}
@@ -13,9 +15,12 @@ spec:
   replicas: {{ index .Values "document-db" "deployment" "replicas" }}
   selector:
     matchLabels:
-      app: {{ include "app.name" .}}
+      app: {{ $appName }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configMap.yml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
       labels:
         {{ include "common.labels" . | nindent 8 }}
     spec: 
@@ -31,11 +36,8 @@ spec:
             requests:
               cpu: "250m"
               memory: "512Mi"
-          envFrom:
-            - configMapRef:
-                name: {{ include "app.name" .}}
-            - secretRef:
-                name:  {{ include "app.name" .}}
+          env:
+            {{ include "document-db.env" . | nindent 10 }}
           ports:
             - containerPort: {{ index .Values "document-db" "deployment" "expose-port" }}
               name: expose-port
@@ -45,7 +47,7 @@ spec:
       volumes:
         - name: {{ index .Values "document-db" "deployment" "volume" "name" }}
           persistentVolumeClaim:
-            claimName: {{ include "app.name" .}}
+            claimName: {{ $appName }}
           
 
 

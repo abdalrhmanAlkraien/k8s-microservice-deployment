@@ -22,14 +22,14 @@
 {{- end}}
 
 {{- define "getChartName" -}}
-    {{- default .Chart.Name .Values.name | trunc 63 | trimSuffix "-"}}
+    {{- default .Chart.Name .Values.name | trunc 63 | trimSuffix "-" }}
 {{end}}
 
 {{- define "app.name" -}}
     {{- if .Values.name}}
         {{- .Values.name | trunc 63 | trimSuffix "-" }}
     {{- else}}
-        {{printf "%s-%s" .Release.Name (include "getChartName" .) | trunc 63 | trimSuffix "-"}}
+        {{printf "%s-%s" .Release.Name (include "getChartName" .) | trunc 63 | trimSuffix "-" }}
     {{- end }}
 {{end}}
 
@@ -83,7 +83,7 @@
 {{- end }}
 
 {{- define "common.labels.app" -}}
-    {{{{- default "document-db" (index .Values.common.labels.app) }}}}
+    {{- default "document-db" (index .Values.common.labels.app) }}
 {{- end }}
 
 {{- define "common.labels" -}}
@@ -95,3 +95,34 @@ owner: {{ include "common.labels.owner" . }}
 evn: {{ include "common.labels.env" . }}
 app: {{include "common.labels.app" .}}
 {{end}}
+
+
+{{/*
+Prepare environment variables for MySQL container
+*/}}
+
+{{- define "document-db.env" -}}
+
+{{ $appName := include "app.name" . }}
+
+- name: MYSQL_ROOT_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ $appName }}
+      key: MYSQL_ROOT_PASSWORD
+- name: MYSQL_DATABASE
+  valueFrom:
+    configMapKeyRef:
+      name: {{ $appName }}
+      key: MYSQL_DATABASE
+- name: MYSQL_USER
+  valueFrom:
+    secretKeyRef:
+      name: {{ $appName }}
+      key: MYSQL_USER
+- name: MYSQL_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ $appName }}
+      key: MYSQL_PASSWORD
+{{- end }}

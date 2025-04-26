@@ -23,6 +23,9 @@ spec:
     metadata:
       labels:
         {{ include "common.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/documentConfigMap.yml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/documentSecret.yml") . | sha256sum }}
     spec:
       # restartPolicy: Always
       containers:

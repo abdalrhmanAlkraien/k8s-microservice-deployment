@@ -19,7 +19,7 @@ document-app:
     image:
       repository: abdalrhmanalkraien
       image-name: document-service
-      image-version: 1.0.10
+      image-version: 1.0.12
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
       container-name: document-service
     expose-port: 8090
@@ -43,14 +43,17 @@ document-app:
 #Configkey 
   configMap:
     data:
-      data.url: "jdbc:mysql://document-db.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character"
+      data:
+        url: "jdbc:mysql://document-db.micro-app.svc.cluster.local:3306/report-service?autoReconnect=true&useUnicode=true&character"
       _JAVA_OPTIONS: "-Xmx2048m -Xms256m"
       JAVA_TOOL_OPTIONS: "-Xms256m -Xmx1024m"
-      profile.active: dev
+      profile:
+        active: dev
 
 #Secret key
   secret: 
     data:
-      data.username: adminUser
-      data.password: AdminPassword
+      data:
+        username: adminUser
+        password: AdminPassword
 

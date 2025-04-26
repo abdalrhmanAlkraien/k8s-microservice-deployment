@@ -10,7 +10,7 @@ metadata:
   labels:
     {{ include "common.labels" . | nindent 4 }}
 data:
-  data.url: {{ index .Values "document-app" "configMap" "data" "data.url"}}
+  DATA_URL: {{ index .Values "document-app" "configMap" "data" "data" "url"}}
   _JAVA_OPTIONS: {{ index .Values "document-app" "configMap" "data" "_JAVA_OPTIONS"}}
   JAVA_TOOL_OPTIONS: {{ index .Values "document-app" "configMap" "data" "JAVA_TOOL_OPTIONS"}}
-  profile.active: {{ index .Values "document-app" "configMap" "data" "profile.active"}}
+  PROFILE_ACTIVE: {{ index .Values "document-app" "configMap" "data" "profile" "active"}}
