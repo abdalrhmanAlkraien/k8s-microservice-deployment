@@ -42,10 +42,10 @@ spec:
             - containerPort: {{ index .Values "document-db" "deployment" "expose-port" }}
               name: expose-port
           volumeMounts:
-            - name:  {{ index .Values "document-db" "deployment" "volume" "name" }}
+            - name:  {{ $appName }}
               mountPath:  {{ index .Values "document-db" "deployment" "volume" "mountPath" }}
       volumes:
-        - name: {{ index .Values "document-db" "deployment" "volume" "name" }}
+        - name: {{ $appName }}
           persistentVolumeClaim:
             claimName: {{ $appName }}
           

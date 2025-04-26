@@ -3,12 +3,17 @@
 # Version: 1.0
 
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolumeClaim
 metadata:
   name:  {{ include "app.name" .}}
   namespace: {{ index .Values.namespace }}
   labels:
     {{ include "common.labels" . | nindent 4 }}
-data:
-  NEXUS_SECURITY_RANDOMPASSWORD: {{ .Values.nexus.configMap.NEXUS_SECURITY_RANDOMPASSWORD }}
-  
+
+spec:
+  accessModes:
+    - {{ index .Values.nexus.pv.accessMode}}
+  resources:
+    request:
+      storage: {{ .Values.nexus.pv.storage }}
+  storageClassName: ""

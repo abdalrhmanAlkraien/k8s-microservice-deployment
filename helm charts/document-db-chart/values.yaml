@@ -27,7 +27,6 @@ document-db:
       imagePullPolicy: IfNotPresent
     volume: 
       mountPath: /var/lib/mysql/
-      name: mysql-storage
   service:
     port:
       listener-port: 3306

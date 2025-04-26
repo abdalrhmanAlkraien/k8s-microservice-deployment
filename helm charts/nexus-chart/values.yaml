@@ -27,8 +27,8 @@ nexus:
     strategy:
       type: RollingUpdate
     volume: 
-      mountPath: /var/lib/mysql/
-      name: mysql-storage
+      mountPath: /sonatype-work/nexus3
+      name: nexus-storage
 
   # Service section
   service:
@@ -48,4 +48,14 @@ nexus:
   ingress:
     port:
       number: 8081
+  
+  # pv
+  pv:
+    storage: 5Gi
+    accessMode: readWriteOnce
+
+  #pvc
+
+  pvc:
+    app: x
   
