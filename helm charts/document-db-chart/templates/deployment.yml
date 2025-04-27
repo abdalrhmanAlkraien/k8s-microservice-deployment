@@ -44,6 +44,7 @@ spec:
           volumeMounts:
             - name:  {{ $appName }}
               mountPath:  {{ index .Values "document-db" "deployment" "volume" "mountPath" }}
+      nodeName: worker-node-2
       volumes:
         - name: {{ $appName }}
           persistentVolumeClaim:

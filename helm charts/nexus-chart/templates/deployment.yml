@@ -30,7 +30,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-      - image: {{ include "nexus.deployment.image.fullname" . | quote }}
+      - image: {{ include "nexus.de ployment.image.fullname" . | quote }}
         imagePullPolicy: {{ .Values.nexus.deployment.image.imagePullPolicy }}
         name: {{ index .Values.nexus.deployment.image "container-name" }}
         resources:
@@ -44,7 +44,7 @@ spec:
           httpGet:
             path: /service/rest/v1/status
             port: {{ index .Values.nexus.deployment "expose-port" }}
-          initialDelaySeconds: 120
+          initialDelaySeconds: 120    
           periodSeconds: 10
           failureThreshold: 3
           timeoutSeconds: 10
@@ -69,6 +69,7 @@ spec:
         volumeMounts: 
           - name:  {{ $appName }}
             mountPath: {{ .Values.nexus.deployment.volume.mountPath }}
+      nodeName: worker-node-1
       volumes: 
         - name: {{ $appName }}
           persistentVolumeClaim:
