@@ -15,11 +15,11 @@ common:
 # Deployment
 document-app:
   deployment:
-    replicas: 2
+    replicas: 1
     image:
       repository: abdalrhmanalkraien
       image-name: document-service
-      image-version: 1.0.12
+      image-version: 1.0.19
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
       container-name: document-service
     expose-port: 8090

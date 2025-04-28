@@ -67,7 +67,7 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: data
-      nodeName: worker-node-2
+      # nodeName: worker-node-2
       volumes:
         - name: data
           emptyDir: {}
