@@ -19,10 +19,10 @@ document-app:
     image:
       repository: abdalrhmanalkraien
       image-name: document-service
-      image-version: 1.0.19
+      image-version: 1.0.21
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
       container-name: document-service
-    expose-port: 8090
+    expose-port: 8050
     strategy:
       type: RollingUpdate
 
@@ -35,7 +35,7 @@ document-app:
     labels:
       name: document-service-app
     port:
-      listener-port: 8090
+      listener-port: 8050
       expose-port: 8085
 
 #ingress
