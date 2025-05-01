@@ -18,10 +18,10 @@ document-app:
     replicas: 1
     image:
       repository: abdalrhmanalkraien
-      image-name: document-service
-      image-version: 1.0.19
+      image-name: arb-report
+      image-version: 1.0.0
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
-      container-name: document-service
+      container-name: arb-report
     expose-port: 8090
     strategy:
       type: RollingUpdate
