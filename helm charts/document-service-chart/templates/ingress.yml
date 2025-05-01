@@ -25,4 +25,4 @@ spec:
               service:
                 name: {{ $appName }}
                 port:
-                  number: {{ index .Values "document-app" "deployment" "expose-port" }}
+                  number: {{ index .Values "document-app" "service" "port" "expose-port" }}
