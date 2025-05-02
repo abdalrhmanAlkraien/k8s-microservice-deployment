@@ -11,8 +11,8 @@ metadata:
   namespace: {{ index .Values.namespace }}
   labels:
     {{ include "common.labels" . | nindent 4 }}
-  # annotations:
-  #   nginx.ingress.kubernetes.io/rewrite-target: /
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
   
 spec:
   rules:
