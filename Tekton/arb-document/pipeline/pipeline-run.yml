@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata: 
+  name:  app-ci-run
+  namespace: tekton-pipelines
+spec: 
+  pipelineRef: 
+    name: app-ci-pipeline
+  serviceAccountName:  pipeline-sa
+  params: 
+    - name: repo-url
+      value: https://github.com/YOUR_USERNAME/YOUR_REPO.git
+    - name: image-url
+      value: docker.io/YOUR_USERNAME/YOUR_IMAGE:latest
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        metadata:
+          name: shared-pvc
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            request:
+              storage: 1Gi
+    - name: docker-config
+      secret:
+        secretName: docker-secret
