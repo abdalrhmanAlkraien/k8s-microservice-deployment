@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: git-clone-test-run
+  namespace: micro-app
+spec:
+  taskRef:
+    name: git-clone
+  params:
+    - name: url
+      value: https://github.com/Aswarya-cloud/poc-report.git
+    - name: revision
+      value: main
+  workspaces:
+    - name: output
+      emptyDir: {}

@@ -1,8 +1,7 @@
-apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   name: git-clone
-  namespace: tekton-pipelines
+  namespace: micro-app
 spec:
   params:
     - name: url
@@ -17,8 +16,14 @@ spec:
       description: The workspaces where the branch will be cloned
   steps:
     - name: clone
-      image: alpine/git:latest
+      image: bitnami/git:2.43.0
+#      securityContext:
+#        allowPrivilegeEscalation: false
+#        capabilities:
+#          drop: ["ALL"]
+#        runAsNonRoot: true
+#        seccompProfile:
+#          type: RuntimeDefault
       script: |
         #!/bin/sh
         git clone -b $(params.revision) $(params.url) $(workspaces.output.path)/source
- 
