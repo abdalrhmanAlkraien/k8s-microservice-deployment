@@ -18,11 +18,11 @@ document-app:
     replicas: 1
     image:
       repository: abdalrhmanalkraien
-      image-name: document-service
-      image-version: 1.0.21
+      image-name: arb-report
+      image-version: 1.0.0
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
-      container-name: document-service
-    expose-port: 8050
+      container-name: arb-report
+    expose-port: 8090
     strategy:
       type: RollingUpdate
 
@@ -35,7 +35,7 @@ document-app:
     labels:
       name: document-service-app
     port:
-      listener-port: 8050
+      listener-port: 8090
       expose-port: 8085
 
 #ingress
