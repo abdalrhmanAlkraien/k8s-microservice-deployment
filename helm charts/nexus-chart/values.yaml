@@ -19,7 +19,7 @@ nexus:
     replicas: 1
     image:
       repository: sonatype
-      image-name: nexus3
+      image-name: nexus3-minimal
       image-version: latest
       imagePullPolicy: IfNotPresent # could be Always, IfNotPresent, and Never
       container-name: nexus

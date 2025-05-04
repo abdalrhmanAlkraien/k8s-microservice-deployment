@@ -11,4 +11,9 @@ metadata:
     {{ include "common.labels" . | nindent 4 }}
 data:
   NEXUS_SECURITY_RANDOMPASSWORD: {{ .Values.nexus.configMap.NEXUS_SECURITY_RANDOMPASSWORD | quote }}
+  create-admin-user.groovy: |
+    import org.sonatype.nexus.security.user.UserManager
+    security.addUser('myadmin', 'Admin', 'User', 'abdalrhmanalkraien@gmail.com', true, 'admin', [UserManager.DEFAULT_ADMIN_ROLE_ID])
+
+
   

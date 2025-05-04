@@ -29,8 +29,9 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
     spec:
       restartPolicy: Always
+      nodeName: worker-node-2
       containers:
-      - image: {{ include "nexus.de ployment.image.fullname" . | quote }}
+      - image: {{ include "nexus.deployment.image.fullname" . | quote }}
         imagePullPolicy: {{ .Values.nexus.deployment.image.imagePullPolicy }}
         name: {{ index .Values.nexus.deployment.image "container-name" }}
         resources:
@@ -69,8 +70,16 @@ spec:
         volumeMounts: 
           - name:  {{ $appName }}
             mountPath: {{ .Values.nexus.deployment.volume.mountPath }}
-      nodeName: worker-node-1
+          - name: init-script
+            mountPath: /opt/sonatype/nexus/etc/scripts
+            readOnly: true
       volumes: 
         - name: {{ $appName }}
           persistentVolumeClaim:
             claimName: {{ $appName }}
+        - name: init-script
+          configMap:
+            name: {{ $appName }}
+            items:
+              - key: create-admin-user.groovy
+                path: create-admin-user.groovy
