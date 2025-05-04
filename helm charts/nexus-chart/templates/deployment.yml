@@ -29,7 +29,7 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yml") . | sha256sum }}
     spec:
       restartPolicy: Always
-      nodeName: worker-node-2
+      nodeName: worker-node-3
       containers:
       - image: {{ include "nexus.deployment.image.fullname" . | quote }}
         imagePullPolicy: {{ .Values.nexus.deployment.image.imagePullPolicy }}
@@ -70,9 +70,6 @@ spec:
         volumeMounts: 
           - name:  {{ $appName }}
             mountPath: {{ .Values.nexus.deployment.volume.mountPath }}
-          - name: init-script
-            mountPath: /opt/sonatype/nexus/etc/scripts
-            readOnly: true
       volumes: 
         - name: {{ $appName }}
           persistentVolumeClaim:

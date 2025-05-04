@@ -9,9 +9,9 @@ spec:
   serviceAccountName:  pipeline-sa
   params: 
     - name: repo-url
-      value: https://github.com/YOUR_USERNAME/YOUR_REPO.git
+      value: https://github.com/Aswarya-cloud/poc-report.git
     - name: image-url
-      value: docker.io/YOUR_USERNAME/YOUR_IMAGE:latest
+      value: docker.io/abdalrhmanalkraien/arb-report:latest
   workspaces:
     - name: shared-workspace
       volumeClaimTemplate:
