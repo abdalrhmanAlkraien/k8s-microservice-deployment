@@ -14,4 +14,12 @@ spec:
       script: | 
         #!/bin/sh
         echo "Building the project using Maven ..."
-        mvn clean package -DskipTests
+        mvn clean package -DskipTests -s /root/.m2/settings.xml
+      volumeMounts:
+        - name: maven-settings
+          mountPath: /root/.m2 
+
+volumes:
+  - name: maven-settings
+    configMap:
+      name: maven-settings

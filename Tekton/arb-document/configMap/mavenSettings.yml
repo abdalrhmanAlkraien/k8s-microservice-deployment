@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maven-settings
+  namespace: tekton-pipelines
+data:
+  settings.xml: |
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+    <servers>
+        <server>
+            <id>nexus-snapshots</id>
+            <username>admin</username>
+            <password>admin</password>
+        </server>
+        <server>
+            <id>nexus-releases</id>
+            <username>admin</username>
+            <password>admin</password>
+        </server>
+    </servers>
+    <mirrors>
+        <mirror>
+            <id>nexus</id>
+            <mirrorOf>*</mirrorOf>
+            <url>http://165.22.21.12:32557/repository/maven-public/</url>
+        </mirror>
+    </mirrors>
+    </settings>
