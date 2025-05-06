@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1
 kind: Task
 metadata: 
   name: docker-build-push
-  namespace: tekton-pipelines
+  namespace: micro-app
 spec:
   params:
     - name: IMAGE

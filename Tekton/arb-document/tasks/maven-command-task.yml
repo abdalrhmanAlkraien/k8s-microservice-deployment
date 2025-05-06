@@ -2,24 +2,28 @@ apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   name: maven-build
-  namespace: tekton-pipelines
+  namespace: micro-app
 spec:
   workspaces:
     - name: source
       description: where the source code
-  steps:  
-    - name: build
+    - name: settings
+      description: to share the custome maven settings
+  steps:
+    - name: maven-package
       image: maven:3.9.6-eclipse-temurin-17
       workingDir: /workspace/source/source
-      script: | 
+      script: |
         #!/bin/sh
+        echo "Injecting Maven settings ..."
+        mkdir -p /root/.m2
+        cp /config/settings.xml /root/.m2/settings.xml
         echo "Building the project using Maven ..."
         mvn clean package -DskipTests -s /root/.m2/settings.xml
       volumeMounts:
         - name: maven-settings
-          mountPath: /root/.m2 
-
-volumes:
-  - name: maven-settings
-    configMap:
-      name: maven-settings
+          mountPath: /config
+  volumes:
+    - name: maven-settings
+      configMap:
+        name: maven-settings
