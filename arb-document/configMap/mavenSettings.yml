@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maven-settings
+  namespace: micro-app
+data:
+  settings.xml: |
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+      <servers>
+        <server>
+          <id>nexus-snapshots</id>
+          <username>admin</username>
+          <password>admin</password>
+        </server>
+        <server>
+          <id>nexus-releases</id>
+          <username>admin</username>
+          <password>admin</password>
+        </server>
+      </servers>
+      <mirrors>
+        <mirror>
+          <id>nexus-releases</id>
+          <mirrorOf>central,!snapshots</mirrorOf>
+          <url>https://nexus.aswarya.com/repository/maven-public/</url>
+        </mirror>
+          <mirror>
+          <id>nexus-snapshots</id>
+          <mirrorOf>*:snapshots</mirrorOf>
+          <url>https://nexus.aswarya.com/repository/maven-snapshots/</url>
+        </mirror>
+        <mirror>
+          <id>maven-default-http-blocker</id>
+          <mirrorOf>external:dummy:*</mirrorOf>
+          <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+          <url>http://0.0.0.0/</url>
+          <blocked>true</blocked>
+        </mirror>
+      </mirrors>
+      <profiles>
+        <profile>
+          <id>allow-http</id>
+          <repositories>
+            <!-- Releases -->
+            <repository>
+              <id>nexus-releases</id>
+              <url>https://nexus.aswarya.com/repository/maven-public/</url>
+              <releases><enabled>true</enabled></releases>
+              <snapshots><enabled>false</enabled></snapshots>
+            </repository>
+            <!-- Snapshots -->
+            <repository>
+              <id>nexus-snapshots</id>
+              <url>https://nexus.aswarya.com/repository/maven-snapshots/</url>
+              <releases><enabled>false</enabled></releases>
+              <snapshots><enabled>true</enabled></snapshots>
+            </repository>
+          </repositories>
+        </profile>
+      </profiles>
+
+      <activeProfiles>
+        <activeProfile>allow-http</activeProfile>
+      </activeProfiles>
+
+    </settings>

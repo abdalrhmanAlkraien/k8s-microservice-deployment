@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-inspect
+  namespace: micro-app
+spec:
+  containers:
+    - name: inspect
+      image: alpine:latest
+      command: ["/bin/sh"]
+      args: ["-c", "sleep 3600"]
+      volumeMounts:
+        - name: shared-volume
+          mountPath: /data
+  volumes:
+    - name: shared-volume
+      persistentVolumeClaim:
+        claimName: shared-pvc
+  restartPolicy: Never
+  nodeSelector:
+    kubernetes.io/hostname: worker-node-2

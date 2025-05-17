@@ -1,0 +1,67 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: arb-ci-pipeline
+  namespace: micro-app
+
+spec:
+  params:
+    - name: url
+      type: string
+      description: the repository url.
+    - name:  image-url
+      type: string
+  workspaces:
+    - name: shared-workspace
+    - name: maven-settings
+    - name: docker-secret
+  tasks:
+    - name: clone-repo
+      taskRef:
+        name:  git-clone
+      workspaces: 
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.url)
+        - name: revision
+          value: develop
+    - name: maven-build
+      runAfter: [clone-repo]
+      taskRef:
+        name: maven-build
+      workspaces:
+        - name: settings
+          workspace: maven-settings
+        - name: source
+          workspace: shared-workspace
+    - name: docker-build-push
+      runAfter: [maven-build]
+      taskRef:
+        name: docker-build-push
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+        - name: docker-secret
+          workspace: docker-secret
+      params:
+        - name: IMAGE
+          value: $(params.image-url)
+        - name: DOCKERFILE
+          value: "./Dockerfile"
+        - name: CONTEXT
+          value: "/workspace/source/source"
+    - name: deploy-cluster
+      runAfter: [docker-build-push]
+      taskRef:
+        name: deploy-helm
+      workspaces:
+        - name:  source
+          workspace: shared-workspace
+      params:
+        - name: release-name
+          value: arb-report
+        - name: chart-path
+          value: ./helm-chart
+

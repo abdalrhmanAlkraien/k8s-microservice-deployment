@@ -1,18 +1,39 @@
 apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
-  name: app-ci-pipeline
-  namespace: tekton-pipelines
+  name: arb-ci-pipeline
+  namespace: micro-app
 
 spec:
   params:
-    - name: repo-url
+    - name: git-url
       type: string
+      description: the repository url.
     - name:  image-url
       type: string
+      description: the docker image url.
+    - name: revision
+      type: string
+      description: the branch name.
+    - name: DOCKERFILE
+      type: string
+      description: docker file location inside the git.
+    - name: CONTEXT
+      type: string
+      description: the work load.
+    - name: release-name
+      type: string
+      description: name of the realese.
+    - name: chart-path
+      type: string
+      description: helm chart location inside the git.
+    - name: app-name 
+      type: string
+      description: application name
   workspaces:
     - name: shared-workspace
-    - name:  docker-config
+    - name: maven-settings
+    - name: docker-secret
   tasks:
     - name: clone-repo
       taskRef:
@@ -22,37 +43,52 @@ spec:
           workspace: shared-workspace
       params:
         - name: url
-          value: $(params.repo-url)
+          value: $(params.git-url)
         - name: revision
-          value: develop
+          value: $(params.revision)
     - name: maven-build
+      runAfter: [clone-repo]
       taskRef:
         name: maven-build
       workspaces:
+        - name: settings
+          workspace: maven-settings
         - name: source
           workspace: shared-workspace
     - name: docker-build-push
+      runAfter: [maven-build]
       taskRef:
         name: docker-build-push
       workspaces:
         - name: source
           workspace: shared-workspace
-        - name: docker-config
-          workspace: docker-config
-    - name: deploy-cluster
-      taskRef:
-        name: deploy-helm
-      workspaces:
-        - name:  source
-          workspace: shared-workspace
+        - name: docker-secret
+          workspace: docker-secret
       params:
-        - name: release-name
-          value: arb-report
-        - name: chart-path
-          value: ./helm/document
-        - name: namespace
-          value: micro-app
-      parms: 
-        - name:  IMAGE
+        - name: IMAGE
           value: $(params.image-url)
+        - name: DOCKERFILE
+          value: $(params.DOCKERFILE)
+        - name: CONTEXT
+          value: $(params.CONTEXT)
+    - name: argos-sync
+      runAfter: [docker-build-push]
+      taskRef:
+        name: argocd-sync-task
+      params: 
+        - name: app-name
+          value: $(params.app-name)
+
+    # - name: deploy-cluster
+    #   runAfter: [docker-build-push]
+    #   taskRef:
+    #     name: deploy-helm
+    #   workspaces:
+    #     - name:  source
+    #       workspace: shared-workspace
+    #   params:
+    #     - name: release-name
+    #       value: $(params.release-name)
+    #     - name: chart-path
+    #       value: $(params.chart-path)
 

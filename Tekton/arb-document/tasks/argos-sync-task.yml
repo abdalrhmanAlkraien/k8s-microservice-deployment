@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: argocd-sync-task
+  namespace: micro-app
+spec:
+  params:
+    - name: app-name
+      description: The name of the ArgoCD application to sync
+      type: string
+    - name: server
+      description: Argo CD server hostname (without https://)
+      type: string
+      default: "argocd.aswarya.com"
+    - name: username
+      description: Argo CD username
+      type: string
+      default: "admin"
+    - name: password
+      description: Argo CD password
+      type: string
+      default: "admin"
+  steps:
+    - name: sync
+      image: argoproj/argocd:v2.10.1
+      script: |
+        #!/bin/sh
+        echo "🔐 Logging into Argo CD..."
+        argocd login $(params.server) \
+          --username $(params.username) \
+          --password $(params.password) \
+          --insecure
+
+        echo "🔄 Syncing Argo CD application: $(params.app-name)"
+        argocd app sync $(params.app-name)
+
+        echo "✅ Waiting for sync to complete..."
+        argocd app wait $(params.app-name) --operation --health

@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: maven-build
+  namespace: micro-app
+spec:
+  workspaces:
+    - name: source
+      description: where the source code
+    - name: settings
+      description: to share the custome maven settings
+  steps:
+    - name: verify-settings
+      image: alpine
+      script: |
+        #!/bin/sh
+        echo "Checking if /workspace/settings/settings.xml exists..."
+         ls -l /workspace/settings
+        echo "--- File Content ---"
+        cat /workspace/settings/settings.xml
+    - name: maven-package
+      image: maven:3.9.6-eclipse-temurin-21
+      workingDir: /workspace/source/source
+      script: |
+        #!/bin/sh
+        echo "Injecting Maven settings ..."
+        mkdir -p /root/.m2
+        cp /workspace/settings/settings.xml /root/.m2/settings.xml
+        echo "Building the project using Maven ..."
+        cat /root/.m2/settings.xml
+        echo "install depe"
+        mvn clean install -DskipTests 
+        echo "package project"
+        mvn clean package
+      #volumeMounts:
+      #  - name: maven-settings
+      #    mountPath: /config
+  #volumes:
+  #  - name: maven-settings
+  #    configMap:
+  #      name: maven-settings

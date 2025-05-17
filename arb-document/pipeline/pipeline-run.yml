@@ -9,12 +9,10 @@ spec:
   pipelineRef: 
     name: arb-ci-pipeline
   params: 
-    - name: git-url
+    - name: url
       value: https://github.com/Aswarya-cloud/poc-report.git
     - name: image-url
       value: docker.io/abdalrhmanalkraien/arb-report:latest
-    - name: app-name
-      value: arb-report-app
   workspaces:
     - name: shared-workspace
       persistentVolumeClaim:

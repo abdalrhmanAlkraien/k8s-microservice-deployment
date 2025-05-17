@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: maven-pvc
+  namespace: micro-app
+spec:
+  volumeName: maven-pv
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany  # if using NFS or similar
+  resources:
+    requests:
+      storage: 512Mi

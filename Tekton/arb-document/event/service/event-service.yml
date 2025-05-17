@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: el-document-service-listener
+  namespace: micro-app
+spec:
+  type: LoadBalancer   # Or NodePort if you're not using a cloud provider
+  selector:
+    eventlistener: document-service-listener
+  ports:
+    - name: http-listener
+      port: 9090
+      targetPort: 8080

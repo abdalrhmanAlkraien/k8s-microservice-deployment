@@ -1,0 +1,38 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata: 
+  name: docker-build-push
+  namespace: micro-app
+spec:
+  params:
+    - name: IMAGE
+      type: string
+      description: docker image name
+    - name: DOCKERFILE
+      type: string
+      default: ./Dockerfile
+      description: Path of docker file
+    - name: CONTEXT
+      type: string
+      default: /workspace/source/source
+      description: where the code live
+  workspaces:
+    - name: source
+      description: Source code same git-clone and mvn build
+    - name: docker-secret
+      description: Docker config with credentials
+  steps:
+    - name: build-and-push
+      image: gcr.io/kaniko-project/executor:latest # Kaniko builds OCI-compliant images
+      workingDir: $(params.CONTEXT)
+      env:
+        - name: DOCKER_CONFIG
+          value: /workspace/docker-secret
+      command:
+        - /kaniko/executor
+      args:
+        - --dockerfile=$(params.DOCKERFILE)
+        - --context=$(params.CONTEXT)
+        - --destination=$(params.IMAGE)
+        - --skip-tls-verify
+        - --insecure

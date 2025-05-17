@@ -1,20 +1,20 @@
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  name: git-clone-test-run
+  name: deploy-run
   namespace: micro-app
 spec:
   taskRef:
-    name: git-clone
+    name: deploy-helm
   params:
-    - name: url
-      value: https://github.com/Aswarya-cloud/poc-report.git
-    - name: revision
-      value: develop
+    - name: release-name
+      value: arb-report
+    - name: chart-path
+      value: ./helm-chart
   podTemplate:
     nodeSelector:
       kubernetes.io/hostname: worker-node-2
   workspaces:
-    - name: output
+    - name: source
       persistentVolumeClaim:
         claimName: shared-pvc

@@ -1,0 +1,26 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: DocumentEvent
+  namespace: micro-app
+  labels:
+    eventlistener: document-service-listener
+spec: 
+  serviceAccountName: tekton-triggers-sa
+  triggers:
+    - name: document-service-develop-trigger
+      bindings:
+        - ref: document-service-binding
+      template:
+        ref: document-service-template
+      interceptors: 
+        - ref:
+            name: "github"
+          params:
+            - name: eventType
+              value: ["push"]
+        - ref:
+            name: "cel"
+          params: 
+            - name: "filter"
+              value: "body.ref == 'refs/heads/develop'"

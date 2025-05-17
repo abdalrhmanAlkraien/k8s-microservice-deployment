@@ -1,0 +1,21 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: document-service-binding
+  namespace: micro-app
+spec:
+  params:
+    - name: git-url
+      value: $(body.repository.clone_url)
+    - name: image-url
+      value: docker.io/abdalrhmanalkraien/arb-report:latest
+    - name: revision
+      value: $(body.after)
+    - name: DOCKERFILE
+      value: "./Dockerfile"
+    - name: CONTEXT
+      value: "/workspace/source/source"
+    - name: release-name
+      value: arb-report
+    - name: chart-path
+      value: ./helm-chart

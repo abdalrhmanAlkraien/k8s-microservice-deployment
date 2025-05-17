@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: git-clone
+  namespace: micro-app
+spec:
+  params:
+    - name: url
+      type: string
+      description: The github repository
+    - name: revision
+      type: string
+      description: The branch or commit
+      default: "develop"
+  workspaces:
+    - name: output
+      description: The workspaces where the branch will be cloned
+  steps:
+    - name: clone
+      image: bitnami/git:2.43.0
+#      securityContext:
+#        allowPrivilegeEscalation: false
+#        capabilities:
+#          drop: ["ALL"]
+#        runAsNonRoot: true
+#        seccompProfile:
+#          type: RuntimeDefault
+      script: |
+        #!/bin/sh
+        echo "Cleaning previous clone if exists..."
+        rm -rf $(workspaces.output.path)/source
+        echo "Cloning..."
+        git clone -b $(params.revision) $(params.url) $(workspaces.output.path)/source

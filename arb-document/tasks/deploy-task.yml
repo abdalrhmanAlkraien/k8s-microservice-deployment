@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata: 
+  name: deploy-helm
+  namespace: micro-app
+spec: 
+  params:
+    - name: release-name
+      type: string
+    - name: chart-path
+      type: string
+      default: ./helm-chart
+#    - name: namespace
+#      type: string
+#      default: default
+  workspaces:
+    - name: source
+      description: workspace with the helm chart and the app code.
+  steps:
+    - name:  deploy
+      image: alpine/helm:3.13.2
+      workingDir: $(workspaces.source.path)/source
+      script: |
+        #!/bin/sh
+        echo "Deploying Helm release..."
+        helm upgrade --install $(params.release-name) $(params.chart-path)

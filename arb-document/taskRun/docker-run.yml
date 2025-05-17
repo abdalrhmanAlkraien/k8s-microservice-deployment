@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: docker-run
+  namespace: micro-app
+spec:
+  taskRef:
+    name: docker-build-push
+  params:
+    - name: IMAGE
+      value: docker.io/abdalrhmanalkraien/arb-report:latest
+    - name: DOCKERFILE
+      value: ./Dockerfile
+    - name: CONTEXT
+      value: /workspace/source/source
+  podTemplate:
+    nodeSelector:
+      kubernetes.io/hostname: worker-node-2
+  workspaces:
+    - name: source
+      persistentVolumeClaim:
+        claimName: shared-pvc
+    - name: docker-secret
+      secret:
+        secretName: docker-secret

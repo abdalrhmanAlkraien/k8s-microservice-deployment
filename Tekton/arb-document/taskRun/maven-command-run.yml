@@ -1,0 +1,15 @@
+apiVersion: tekton.deb/v1beta1
+kind: TaskRun
+metadata:
+  name: maven-command
+  namespace: micro-app
+spec:
+  taskRef:
+    name: maven-build    
+  podTemplate:
+    nodeSelector:
+      kubernetes.io/hostname: worker-node-2
+  workspaces:
+    - name: source
+      persistentVolumeClaim: 
+        claimName: shared-pvc    
